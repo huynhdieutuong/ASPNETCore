@@ -13,14 +13,23 @@ namespace ASPNETCore
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            System.Console.WriteLine("Start App");
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            // 1. Create IHostBuilder
+            IHostBuilder builder = Host.CreateDefaultBuilder(args);
+
+            // 2. Configure, Register Services (ConfigureWebHostDefaults)
+            builder.ConfigureWebHostDefaults((IWebHostBuilder webBuilder) =>
+            {
+                // Custom Host (Register Service)
+                webBuilder.UseStartup<MyStartUp>();
+            });
+
+            // 3. IHostBuilder.Build() => Host(IHost)
+            IHost host = builder.Build();
+
+            // 4. Host.Run();
+            host.Run();
+        }
     }
 }
