@@ -23,6 +23,9 @@ namespace ASPNETCore
             {
                 // Custom Host (Register Service)
                 webBuilder.UseStartup<MyStartUp>();
+
+                // Rename static folder to "public" (default name "wwwroot")
+                webBuilder.UseWebRoot("public");
             });
 
             // 3. IHostBuilder.Build() => Host(IHost)

@@ -17,6 +17,9 @@ namespace ASPNETCore
         // 2. Build pipeline (middlewares)
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // StaticFileMiddleware to read files in wwwroot folder
+            app.UseStaticFiles();
+
             // 2.3 EndpointRoutingMiddleware
             app.UseRouting();
             app.UseEndpoints(endpoints =>
