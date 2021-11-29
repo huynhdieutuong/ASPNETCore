@@ -7,4 +7,9 @@ public static class UseFirstMiddlewareMethod
     {
         app.UseMiddleware<FirstMiddleware>();
     }
+
+    public static void UseSecondMiddleware(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<SecondMiddleware>();
+    }
 }

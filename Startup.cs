@@ -16,6 +16,7 @@ namespace ASPNETCore
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<SecondMiddleware>(); // 4. Inject SecondMiddleware
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -23,6 +24,10 @@ namespace ASPNETCore
         {
             // app.UseMiddleware<FirstMiddleware>(); // 1. using UseMiddleware
             app.UseFirstMiddleware(); // 2. create extension method for app
+
+            // 5. use middleware
+            // app.UseMiddleware<SecondMiddleware>();
+            app.UseSecondMiddleware();
 
             // Terminate Middleware M1
             app.Run(async context =>
