@@ -31,10 +31,52 @@ namespace ASPNETCore
             // app.UseMiddleware<SecondMiddleware>();
             app.UseSecondMiddleware();
 
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/", async context =>
+                {
+                    var menu = HtmlHelper.MenuTop(
+                        HtmlHelper.DefaultMenuTopItems(),
+                        context.Request
+                    );
+
+                    var html = HtmlHelper.HtmlDocument("HELLO", menu + HtmlHelper.HtmlTrangchu());
+
+                    await context.Response.WriteAsync(html);
+                });
+
+                endpoints.MapGet("/RequestInfo", async context =>
+                {
+                    await context.Response.WriteAsync("RequestInfo");
+                });
+
+                endpoints.MapGet("/Encoding", async context =>
+                {
+                    await context.Response.WriteAsync("Encoding");
+                });
+
+                endpoints.MapGet("/Cookies", async context =>
+                {
+                    await context.Response.WriteAsync("Cookies");
+                });
+
+                endpoints.MapGet("/Json", async context =>
+                {
+                    await context.Response.WriteAsync("Json");
+                });
+
+                endpoints.MapGet("/Form", async context =>
+                {
+                    await context.Response.WriteAsync("Form");
+                });
+            });
+
             // Terminate Middleware M1
             app.Run(async context =>
             {
-                await context.Response.WriteAsync("Hello World");
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsync("Page not found!");
             });
         }
     }
