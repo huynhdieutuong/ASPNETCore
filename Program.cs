@@ -21,6 +21,8 @@ namespace ASPNETCore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    webBuilder.UseWebRoot("public");
                 });
     }
 }

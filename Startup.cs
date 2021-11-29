@@ -22,6 +22,8 @@ namespace ASPNETCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+
             // app.UseMiddleware<FirstMiddleware>(); // 1. using UseMiddleware
             app.UseFirstMiddleware(); // 2. create extension method for app
 

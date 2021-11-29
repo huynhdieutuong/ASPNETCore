@@ -31,3 +31,44 @@ Steps:
 
 1. Register Services (using Dependency Injection)
 2. Build pipeline (middlewares)
+
+---
+
+## Setup Webpack in ASP.NET
+
+1. Install package
+
+   > npm init -y                                                                      # tạo file package.json cho dự án\
+   > npm i -D webpack webpack-cli                                      # cài đặt Webpack\
+   > npm i node-sass postcss-loader postcss-preset-env     # cài đặt các gói để làm việc với SCSS\
+   > npm i sass-loader css-loader cssnano                           # cài đặt các gói để làm việc với SCSS, CSS\
+   > npm i mini-css-extract-plugin cross-env file-loader      # cài đặt các gói để làm việc với SCSS\
+   > npm install copy-webpack-plugin                                 # cài đặt plugin copy file cho Webpack\
+   > npm install npm-watch                                                  # package giám sát file thay đổi
+   >
+   > npm install bootstrap                              # cài đặt thư viện bootstrap\
+   > npm install jquery                                   # cài đặt Jquery\
+   > npm install popper.js                              # thư viện cần cho bootstrap
+
+2. Create `src/scss/site.scss`
+
+3. Create `webpack.config.js`
+
+4. Add in `package.json`
+
+   > "watch": {\
+   >    "build": "src/scss/site.scss"\
+   > },\
+   > "scripts": { \
+   >    "build": "webpack",\
+   >    "watch": "npm-watch"\
+   > },
+
+5. Run Webpack
+
+- Create files into public folder:
+
+  > `npm run build`
+
+- Automatically build when site.scss change:
+  > `npm run watch`
