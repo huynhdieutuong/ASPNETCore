@@ -21,19 +21,13 @@ namespace ASPNETCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // app.UseMiddleware<FirstMiddleware>(); // 1. using UseMiddleware
+            app.UseFirstMiddleware(); // 2. create extension method for app
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
+            // Terminate Middleware M1
+            app.Run(async context =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello world");
-                });
+                await context.Response.WriteAsync("Hello World");
             });
         }
     }
