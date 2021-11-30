@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace ASPNETCore
 {
@@ -72,7 +73,17 @@ namespace ASPNETCore
 
                 endpoints.MapGet("/Json", async context =>
                 {
-                    await context.Response.WriteAsync("Json");
+                    context.Response.ContentType = "application/json";
+
+                    var product = new
+                    {
+                        ProductName = "Apple watch 6",
+                        Price = 800,
+                        Date = new DateTime(2020, 11, 30)
+                    };
+
+                    var json = JsonConvert.SerializeObject(product);
+                    await context.Response.WriteAsync(json);
                 });
 
                 endpoints.MapGet("/Form", async context =>
