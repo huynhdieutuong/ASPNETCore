@@ -48,7 +48,16 @@ namespace ASPNETCore
 
                 endpoints.MapGet("/RequestInfo", async context =>
                 {
-                    await context.Response.WriteAsync("RequestInfo");
+                    var menu = HtmlHelper.MenuTop(
+                        HtmlHelper.DefaultMenuTopItems(),
+                        context.Request
+                    );
+
+                    var info = RequestProcess.RequestInfo(context.Request).HtmlTag("div", "container");
+
+                    var html = HtmlHelper.HtmlDocument("HELLO", menu + info);
+
+                    await context.Response.WriteAsync(html);
                 });
 
                 endpoints.MapGet("/Encoding", async context =>
