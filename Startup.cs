@@ -119,10 +119,19 @@ namespace ASPNETCore
                     await context.Response.WriteAsync(json);
                 });
 
-                endpoints.MapGet("/Form", async context =>
-                {
-                    await context.Response.WriteAsync("Form");
-                });
+                endpoints.MapMethods("/Form", new string[] { "POST", "GET" }, async context =>
+                  {
+                      var menu = HtmlHelper.MenuTop(
+                          HtmlHelper.DefaultMenuTopItems(),
+                          context.Request
+                      );
+
+                      var formHtml = RequestProcess.ProcessForm(context.Request).HtmlTag("div", "container");
+
+                      var html = HtmlHelper.HtmlDocument("HELLO", menu + formHtml);
+
+                      await context.Response.WriteAsync(html);
+                  });
             });
 
             // Terminate Middleware M1

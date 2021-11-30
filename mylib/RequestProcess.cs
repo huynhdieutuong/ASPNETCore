@@ -1,9 +1,67 @@
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 
 public static class RequestProcess
 {
+    public static string ProcessForm(HttpRequest request)
+    {
+        //Xử lý đọc dữ liệu Form - khi post - dữ liệu này trình  bày trên Form
+        string hovaten = "";
+        bool luachon = false;
+        string email = "";
+        string password = "";
+        string thongbao = "";
+
+        // Đọc dữ liệu từ Form do truy vấn gửi đến (chỉ xử lý khi là post)
+        if (request.Method == "POST")
+        {
+            IFormCollection _form = request.Form;
+
+            email = _form["email"].FirstOrDefault() ?? "";
+            hovaten = _form["hovaten"].FirstOrDefault() ?? "";
+            password = _form["password"].FirstOrDefault() ?? "";
+            luachon = (_form["luachon"].FirstOrDefault() == "on");
+
+            thongbao = $@"Dữ liệu POST 
+                          - email: {email}
+                          - hovaten: {hovaten} 
+                          - password: {password}
+                          - luachon: {luachon} ";
+
+            // var filePath = Path.GetTempFileName();
+            // Xử lý nếu có file upload (hình ảnh,  ... )
+            if (_form.Files.Count > 0)
+            {
+                if (!Directory.Exists("public/upload/")) Directory.CreateDirectory("public/upload/");
+
+                string thongbaofile = "Các file đã upload: ";
+                foreach (IFormFile formFile in _form.Files)
+                {
+                    if (formFile.Length > 0)
+                    {
+                        var filePath = "public/upload/" + formFile.FileName;    // Lấy tên file
+
+                        thongbaofile += $"{filePath} {formFile.Length} bytes";
+                        using (var stream = new FileStream(filePath, FileMode.Create)) // Mở stream để lưu file, lưu file ở thư mục public/upload/
+                        {
+                            formFile.CopyTo(stream);
+                        }
+                    }
+
+                }
+                thongbao += "<br>" + thongbaofile;
+            }
+        }
+
+        var format = File.ReadAllText("formtest.html");
+
+        var html = string.Format(format, hovaten, email, luachon ? "checked" : "");
+
+        return html + thongbao;
+    }
+
     // Đọc các thông tin cơ bản của Request
     // Trả về HTML trình  bày các thông tin đó
     public static string RequestInfo(HttpRequest request)
