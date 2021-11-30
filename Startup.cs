@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -66,9 +67,41 @@ namespace ASPNETCore
                     await context.Response.WriteAsync("Encoding");
                 });
 
-                endpoints.MapGet("/Cookies", async context =>
+                // /Cookies/write
+                // /Cookies/read
+                // {*action} is a dynamic, can have value or empty
+                endpoints.MapGet("/Cookies/{*action}", async context =>
                 {
-                    await context.Response.WriteAsync("Cookies");
+                    var menu = HtmlHelper.MenuTop(
+                        HtmlHelper.DefaultMenuTopItems(),
+                        context.Request
+                    );
+
+                    var action = context.GetRouteValue("action") ?? "read"; // if no action (/Cookies), set default "read" (/Cookies/read)
+                    string message = null;
+                    if (action.ToString() == "write")
+                    {
+                        var options = new CookieOptions()
+                        {
+                            Path = "/",
+                            Expires = DateTime.Now.AddDays(1)
+                        };
+                        context.Response.Cookies.Append("ProductId", "4354366546", options);
+                        message = "Cookie has been written";
+                    }
+                    else
+                    {
+                        var listCookies = context.Request.Cookies.Select(header => $"{header.Key}: {header.Value}".HtmlTag("li"));
+                        message = string.Join("", listCookies).HtmlTag("ul");
+                    }
+
+                    var guide = "<a class=\"btn btn-danger\" href=\"/Cookies/read\">Read Cookie</a><a class=\"btn btn-success\" href=\"/Cookies/write\">Write Cookie</a>";
+                    guide = guide.HtmlTag("div", "container mt-4");
+                    message = message.HtmlTag("div", "container alert alert-danger");
+
+                    var html = HtmlHelper.HtmlDocument($"Cookies: {action}", menu + guide + message);
+
+                    await context.Response.WriteAsync(html);
                 });
 
                 endpoints.MapGet("/Json", async context =>
