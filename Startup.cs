@@ -27,6 +27,7 @@ namespace ASPNETCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SecondMiddleware>(); // 4. Inject SecondMiddleware
+            services.AddTransient<TestOptionsMiddleware>(); // 2.3 Register service (Inject TestOptionsMiddleware)
 
             services.AddOptions();
             var testOptions = _configuration.GetSection("TestOptions");
@@ -44,6 +45,8 @@ namespace ASPNETCore
             // 5. use middleware
             // app.UseMiddleware<SecondMiddleware>();
             app.UseSecondMiddleware();
+
+            app.UseMiddleware<TestOptionsMiddleware>(); // 2.4 Use TestOptionsMiddleware
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
@@ -147,15 +150,15 @@ namespace ASPNETCore
 
                 endpoints.MapGet("/ShowOptions", async context =>
                 {
-                    var testOptions = context.RequestServices.GetService<IOptions<TestOptions>>().Value;
+                    // var testOptions = context.RequestServices.GetService<IOptions<TestOptions>>().Value;
 
-                    var stringBuilder = new StringBuilder();
-                    stringBuilder.Append("Test Options\n");
-                    stringBuilder.Append($"opt_key1 = {testOptions.opt_key1}\n");
-                    stringBuilder.Append($"TestOptions.opt_key2.k1 = {testOptions.opt_key2.k1}\n");
-                    stringBuilder.Append($"TestOptions.opt_key2.k2 = {testOptions.opt_key2.k2}");
+                    // var stringBuilder = new StringBuilder();
+                    // stringBuilder.Append("Test Options\n");
+                    // stringBuilder.Append($"opt_key1 = {testOptions.opt_key1}\n");
+                    // stringBuilder.Append($"TestOptions.opt_key2.k1 = {testOptions.opt_key2.k1}\n");
+                    // stringBuilder.Append($"TestOptions.opt_key2.k2 = {testOptions.opt_key2.k2}");
 
-                    await context.Response.WriteAsync(stringBuilder.ToString());
+                    // await context.Response.WriteAsync(stringBuilder.ToString());
                 });
             });
 
