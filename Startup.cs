@@ -10,17 +10,27 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASPNETCore
 {
     public class Startup
     {
+        IConfiguration _configuration;
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SecondMiddleware>(); // 4. Inject SecondMiddleware
+
+            services.AddOptions();
+            var testOptions = _configuration.GetSection("TestOptions");
+            services.Configure<TestOptions>(testOptions);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,8 +147,7 @@ namespace ASPNETCore
 
                 endpoints.MapGet("/ShowOptions", async context =>
                 {
-                    var configuration = context.RequestServices.GetService<IConfiguration>();
-                    var testOptions = configuration.GetSection("TestOptions").Get<TestOptions>();
+                    var testOptions = context.RequestServices.GetService<IOptions<TestOptions>>().Value;
 
                     var stringBuilder = new StringBuilder();
                     stringBuilder.Append("Test Options\n");
