@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -132,6 +134,25 @@ namespace ASPNETCore
 
                       await context.Response.WriteAsync(html);
                   });
+
+                endpoints.MapGet("/ShowOptions", async context =>
+                {
+                    var configuration = context.RequestServices.GetService<IConfiguration>();
+                    var testOptions = configuration.GetSection("TestOptions");
+
+                    var opt_key1 = testOptions["opt_key1"];
+
+                    var k1 = testOptions.GetSection("opt_key2")["k1"];
+                    var k2 = testOptions.GetSection("opt_key2")["k2"];
+
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append("Test Options\n");
+                    stringBuilder.Append($"opt_key1 = {opt_key1}\n");
+                    stringBuilder.Append($"TestOptions.opt_key2.k1 = {k1}\n");
+                    stringBuilder.Append($"TestOptions.opt_key2.k2 = {k2}");
+
+                    await context.Response.WriteAsync(stringBuilder.ToString());
+                });
             });
 
             // Terminate Middleware M1
