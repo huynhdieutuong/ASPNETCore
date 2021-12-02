@@ -28,6 +28,7 @@ namespace ASPNETCore
         {
             services.AddSingleton<SecondMiddleware>(); // 4. Inject SecondMiddleware
             services.AddTransient<TestOptionsMiddleware>(); // 2.3 Register service (Inject TestOptionsMiddleware)
+            services.AddSingleton<ProductNames>(); // 3.2 Register ProductNames service
 
             services.AddOptions();
             var testOptions = _configuration.GetSection("TestOptions");
