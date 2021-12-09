@@ -206,6 +206,12 @@ namespace ASPNETCore
                     var message = await MailUtils.MailUtils.SendMail("frogling5112@gmail.com", "frogling5112@gmail.com", "Test Send Mail", "Hello World!");
                     await context.Response.WriteAsync(message);
                 });
+
+                endpoints.MapGet("/SendGmail", async context =>
+                {
+                    var message = await MailUtils.MailUtils.SendGmail("frogling5112@gmail.com", "frogling5112@gmail.com", "Test Gmail Mail", "Hello World!", "frogling5112@gmail.com", "icawxqrpxheqripi");
+                    await context.Response.WriteAsync(message);
+                });
             });
 
             // Terminate Middleware M1

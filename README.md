@@ -85,3 +85,12 @@ Steps:
    > `dotnet sql-cache create "Server=TUONG\SQLEXPRESS;Database=webdb;Trusted_Connection=True;" dbo Session`
 
 Ref: https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-6.0#distributed-sql-server-cache
+
+--
+
+## Setup Gmail Account to send mail
+
+1. Enable IMAP
+   > Setting > Forwarding and POP/IMAP > Enable IMAP > Save
+2. Create app code
+   > My Google Account > Security > Signing in to Google > Create app code
