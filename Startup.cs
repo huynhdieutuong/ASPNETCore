@@ -200,6 +200,12 @@ namespace ASPNETCore
                     context.Session.SetInt32("count", count.Value);
                     await context.Response.WriteAsync($"Number access /Session: {count}");
                 });
+
+                endpoints.MapGet("/SendMail", async context =>
+                {
+                    var message = await MailUtils.MailUtils.SendMail("frogling5112@gmail.com", "frogling5112@gmail.com", "Test Send Mail", "Hello World!");
+                    await context.Response.WriteAsync(message);
+                });
             });
 
             // Terminate Middleware M1
