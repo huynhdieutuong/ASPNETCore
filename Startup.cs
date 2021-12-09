@@ -33,6 +33,16 @@ namespace ASPNETCore
             services.AddOptions();
             var testOptions = _configuration.GetSection("TestOptions");
             services.Configure<TestOptions>(testOptions);
+
+            // 4.1 Register service session
+            services.AddDistributedMemoryCache();
+
+            // 4.3 Config session
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "tuonghuynh";
+                options.IdleTimeout = new TimeSpan(0, 30, 0); // time out 30 minutes
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,14 +50,17 @@ namespace ASPNETCore
         {
             app.UseStaticFiles();
 
+            // 4.2 Use session middleware
+            app.UseSession();
+
             // app.UseMiddleware<FirstMiddleware>(); // 1. using UseMiddleware
-            app.UseFirstMiddleware(); // 2. create extension method for app
+            //app.UseFirstMiddleware(); // 2. create extension method for app
 
             // 5. use middleware
             // app.UseMiddleware<SecondMiddleware>();
-            app.UseSecondMiddleware();
+            //app.UseSecondMiddleware();
 
-            app.UseMiddleware<TestOptionsMiddleware>(); // 2.4 Use TestOptionsMiddleware
+            //app.UseMiddleware<TestOptionsMiddleware>(); // 2.4 Use TestOptionsMiddleware
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
@@ -160,6 +173,24 @@ namespace ASPNETCore
                     // stringBuilder.Append($"TestOptions.opt_key2.k2 = {testOptions.opt_key2.k2}");
 
                     // await context.Response.WriteAsync(stringBuilder.ToString());
+                });
+
+                endpoints.MapGet("/Session", async context =>
+                {
+                    int? count;
+                    count = context.Session.GetInt32("count");
+
+                    if (count == null)
+                    {
+                        count = 0;
+                    }
+                    else
+                    {
+                        count += 1;
+                    }
+
+                    context.Session.SetInt32("count", count.Value);
+                    await context.Response.WriteAsync($"Number access /Session: {count}");
                 });
             });
 
