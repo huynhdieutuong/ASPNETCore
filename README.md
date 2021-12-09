@@ -72,3 +72,16 @@ Steps:
 
 - Automatically build when site.scss change:
   > `npm run watch`
+
+--
+
+## Store Session in SQL Cache
+
+1. Add package dotnet-sql-cache
+
+   > `dotnet tool install --global dotnet-sql-cache --version 5.0.0`
+
+2. Create table to store session
+   > `dotnet sql-cache create "Server=TUONG\SQLEXPRESS;Database=webdb;Trusted_Connection=True;" dbo Session`
+
+Ref: https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-6.0#distributed-sql-server-cache

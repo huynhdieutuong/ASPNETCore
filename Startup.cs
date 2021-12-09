@@ -35,7 +35,15 @@ namespace ASPNETCore
             services.Configure<TestOptions>(testOptions);
 
             // 4.1 Register service session
-            services.AddDistributedMemoryCache();
+            // services.AddDistributedMemoryCache();
+
+            // Register service sql server cache
+            services.AddDistributedSqlServerCache(option =>
+            {
+                option.ConnectionString = "Server=TUONG\\SQLEXPRESS;Database=webdb;Trusted_Connection=True;";
+                option.SchemaName = "dbo";
+                option.TableName = "Session";
+            });
 
             // 4.3 Config session
             services.AddSession(options =>
