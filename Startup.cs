@@ -17,11 +17,13 @@ namespace ASPNETCore
 {
     public class Startup
     {
+        // 5.4 Inject configuration
         IConfiguration _configuration;
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -29,8 +31,17 @@ namespace ASPNETCore
             services.AddSingleton<SecondMiddleware>(); // 4. Inject SecondMiddleware
             services.AddTransient<TestOptionsMiddleware>(); // 2.3 Register service (Inject TestOptionsMiddleware)
             services.AddSingleton<ProductNames>(); // 3.2 Register ProductNames service
+            services.AddTransient<SendMailService>(); // 5.9 Register SendMailService
 
+            // 5.3 Register AddOptions
             services.AddOptions();
+
+            // 5.5 Get mailSettings from appsettings.json
+            var mailSettings = _configuration.GetSection("MailSettings");
+
+            // 5.6 Inject MailSettings into Configure with mailSettings
+            services.Configure<MailSettings>(mailSettings);
+
             var testOptions = _configuration.GetSection("TestOptions");
             services.Configure<TestOptions>(testOptions);
 
@@ -210,6 +221,19 @@ namespace ASPNETCore
                 endpoints.MapGet("/SendGmail", async context =>
                 {
                     var message = await MailUtils.MailUtils.SendGmail("frogling5112@gmail.com", "frogling5112@gmail.com", "Test Gmail Mail", "Hello World!", "frogling5112@gmail.com", "icawxqrpxheqripi");
+                    await context.Response.WriteAsync(message);
+                });
+
+                endpoints.MapGet("/SendMailService", async context =>
+                {
+                    // 5.10 Get Service
+                    var sendMailService = context.RequestServices.GetService<SendMailService>();
+                    var message = await sendMailService.SendMail(new MailContent()
+                    {
+                        To = "huynhdieutuong@gmail.com",
+                        Subject = "Test Send Mail Service",
+                        Body = "<h1>Test Service</h1><br/><p>Hello <strong>Tuong</strong>, How are you?</p>"
+                    });
                     await context.Response.WriteAsync(message);
                 });
             });
